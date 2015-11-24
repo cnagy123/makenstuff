@@ -44,7 +44,7 @@ void initPeriph(void){
   SPI_Init();
   
   // I2C
-  I2C_Init();
+  I2C0_Init();
 
   // Initialize the ILI9341
   LCD_Init();
