@@ -35,7 +35,7 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-
+#define RX_BUFFER_SIZE   12
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -61,7 +61,15 @@ osTimerId debounceTimerHandle;
 
 osSemaphoreId debounceSemHandle;
 osSemaphoreId appSemHandle;
+
 /* USER CODE BEGIN PV */
+/* Buffer used for reception */
+uint8_t aRXBufferA[RX_BUFFER_SIZE];
+uint8_t aRXBufferB[RX_BUFFER_SIZE];
+__IO uint32_t     uwNbReceivedChars;
+__IO uint32_t     uwBufferReadyIndication;
+uint8_t *pBufferReadyForUser;
+uint8_t *pBufferReadyForReception;
 
 /* USER CODE END PV */
 
@@ -77,6 +85,10 @@ void HeartbeatTask(void const * argument);
 void SwitchIPTask(void const * argument);
 void CmdlineTask(void const * argument);
 void debounceTimerCallback(void const * argument);
+void StartReception(void);
+void HandleContinuousReception(void);
+void UserDataTreatment(uint8_t *DataBuffer);
+
 
 /* USER CODE BEGIN PFP */
 
@@ -88,8 +100,8 @@ int __io_putchar(int ch)
 {
   /* Place your implementation of fputc here */
   /* e.g. write a character to the USART3 and Loop until the end of transmission */
-  HAL_UART_Transmit(&huart3, (uint8_t *)&ch, 1, 0xFFFF);
-
+//  HAL_UART_Transmit(&huart3, (uint8_t *)&ch, 1, 0xFFFF);
+	  HAL_UART_Transmit(&huart3, (uint8_t *)&ch, 1, 0xFFFF);
   return ch;
 }
 /* USER CODE END 0 */
@@ -180,8 +192,7 @@ int main(void)
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
-  printf("\n\r UART Printf Example: retarget the C library printf function to the UART\n\r");
-  printf("** Test finished successfully. ** \n\r");
+
   /* USER CODE END RTOS_THREADS */
 
   /* Start scheduler */
@@ -475,11 +486,6 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 	  if(osSemaphoreWait(debounceSemHandle,0)==osOK){							// try to get semaphore
 		  osTimerStart(debounceTimerHandle, 200);								// start debounce timer
 		  HAL_GPIO_TogglePin(LD3_GPIO_Port,LD3_Pin);							// toggle the connection state LED
-//		  if(osSemaphoreWait(appSemHandle,0)==osOK){							// enter protection
-//			  app.connection_type = HAL_GPIO_ReadPin(LD3_GPIO_Port,LD3_Pin);	// get the connection type
-//			  app.ip_acquire = 1;												// reset need to acquire IP
-//			  osSemaphoreRelease(appSemHandle);									// exit protection
-//		  }
 	  }
   }
 }
@@ -494,9 +500,6 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 /* USER CODE END Header_InitTask */
 void InitTask(void const * argument)
 {
-    
-    
-                 
   /* init code for LWIP */
   MX_LWIP_Init();
 
@@ -555,71 +558,104 @@ void SwitchIPTask(void const * argument)
 /* USER CODE END Header_CmdlineTask */
 void CmdlineTask(void const * argument)
 {
-  /* USER CODE BEGIN CmdlineTask */
+  StartReception();
+
   /* Infinite loop */
   for(;;)
   {
-    osDelay(1);
+	  HandleContinuousReception();
   }
   /* USER CODE END CmdlineTask */
+}
+
+void StartReception(void)
+{
+  /* Initializes Buffer swap mechanism :
+     - 2 physical buffers aRXBufferA and aRXBufferB (RX_BUFFER_SIZE length)
+
+  */
+  pBufferReadyForReception = aRXBufferA;
+  pBufferReadyForUser      = aRXBufferB;
+  uwNbReceivedChars = 0;
+  uwBufferReadyIndication = 0;
+
+  /* Print user info on PC com port */
+  printf("\r\nUSART Example : Enter characters to fill reception buffers.\r\n");
+  /* Clear Overrun flag, in case characters have already been sent to USART */
+  LL_USART_ClearFlag_ORE(USART3);
+
+  /* Enable RXNE and Error interrupts */
+  LL_USART_EnableIT_RXNE(USART3);
+  LL_USART_EnableIT_ERROR(USART3);
+}
+
+void USART_CharReception_Callback(void)
+{
+	uint8_t *ptemp;
+	uint8_t c;
+  /* Read Received character. RXNE flag is cleared by reading of RDR register */
+	c = LL_USART_ReceiveData8(USART3);
+	pBufferReadyForReception[uwNbReceivedChars++] = c;
+
+  /* Checks if Buffer full indication has been set */
+  if ((uwNbReceivedChars >= RX_BUFFER_SIZE)||(c == '\r')||(c == '\n'))
+  {
+    /* Set Buffer swap indication */
+    uwBufferReadyIndication = 1;
+
+    /* Swap buffers for next bytes to be received */
+    ptemp = pBufferReadyForUser;
+    pBufferReadyForUser = pBufferReadyForReception;
+    pBufferReadyForReception = ptemp;
+    uwNbReceivedChars = 0;
+  }
+}
+
+
+void HandleContinuousReception(void)
+{
+  /* Checks if Buffer full indication has been set */
+  if (uwBufferReadyIndication != 0)
+  {
+    /* Reset indication */
+    uwBufferReadyIndication = 0;
+
+    /* Call user Callback in charge of consuming data from filled buffer */
+    UserDataTreatment(pBufferReadyForUser);
+  }
+}
+
+void UserDataTreatment(uint8_t *DataBuffer)
+{
+	/* Display info message + buffer content on PC com port */
+	printf("\r\n- Current RX buffer is full : ");
+	printf(DataBuffer);
+	printf("\r\n- Reception will go on in alternate buffer\r\n");
+
+	/* Toggle LED */
+	HAL_GPIO_TogglePin(LD2_GPIO_Port,LD2_Pin);
 }
 
 /* debounceTimerCallback function */
 void debounceTimerCallback(void const * argument)
 {
-  /* USER CODE BEGIN debounceTimerCallback */
 	osSemaphoreRelease(debounceSemHandle);
-  /* USER CODE END debounceTimerCallback */
 }
 
-/**
-  * @brief  Period elapsed callback in non blocking mode
-  * @note   This function is called  when TIM6 interrupt took place, inside
-  * HAL_TIM_IRQHandler(). It makes a direct call to HAL_IncTick() to increment
-  * a global variable "uwTick" used as application time base.
-  * @param  htim : TIM handle
-  * @retval None
-  */
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
-  /* USER CODE BEGIN Callback 0 */
-
-  /* USER CODE END Callback 0 */
   if (htim->Instance == TIM6) {
     HAL_IncTick();
   }
-  /* USER CODE BEGIN Callback 1 */
-
-  /* USER CODE END Callback 1 */
 }
 
-/**
-  * @brief  This function is executed in case of error occurrence.
-  * @retval None
-  */
+
 void Error_Handler(void)
 {
-  /* USER CODE BEGIN Error_Handler_Debug */
-  /* User can add his own implementation to report the HAL error return state */
+	while(1){
 
-  /* USER CODE END Error_Handler_Debug */
+	}
 }
 
-#ifdef  USE_FULL_ASSERT
-/**
-  * @brief  Reports the name of the source file and the source line number
-  *         where the assert_param error has occurred.
-  * @param  file: pointer to the source file name
-  * @param  line: assert_param error line source number
-  * @retval None
-  */
-void assert_failed(uint8_t *file, uint32_t line)
-{ 
-  /* USER CODE BEGIN 6 */
-  /* User can add his own implementation to report the file name and line number,
-     tex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
-  /* USER CODE END 6 */
-}
-#endif /* USE_FULL_ASSERT */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

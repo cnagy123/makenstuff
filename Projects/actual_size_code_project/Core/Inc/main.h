@@ -30,8 +30,18 @@ extern "C" {
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f7xx_hal.h"
 
+
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "stm32f7xx_ll_bus.h"
+#include "stm32f7xx_ll_rcc.h"
+#include "stm32f7xx_ll_system.h"
+#include "stm32f7xx_ll_utils.h"
+#include "stm32f7xx_ll_gpio.h"
+#include "stm32f7xx_ll_exti.h"
+#include "stm32f7xx_ll_usart.h"
+#include "stm32f7xx_ll_pwr.h"
+
 
 /* USER CODE END Includes */
 
@@ -52,7 +62,7 @@ extern "C" {
 
 /* Exported functions prototypes ---------------------------------------------*/
 void Error_Handler(void);
-
+void USART_CharReception_Callback(void);
 /* USER CODE BEGIN EFP */
 
 /* USER CODE END EFP */
