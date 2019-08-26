@@ -87,7 +87,7 @@ void CmdlineTask(void const * argument);
 void debounceTimerCallback(void const * argument);
 void StartReception(void);
 void HandleContinuousReception(void);
-void UserDataTreatment(uint8_t *DataBuffer);
+void UserDataTreatment(uint8_t *DataBuffer, uint32_t Size);
 
 
 /* USER CODE BEGIN PFP */
@@ -621,15 +621,15 @@ void HandleContinuousReception(void)
     uwBufferReadyIndication = 0;
 
     /* Call user Callback in charge of consuming data from filled buffer */
-    UserDataTreatment(pBufferReadyForUser);
+    UserDataTreatment(pBufferReadyForUser, sizeof(*pBufferReadyForUser));
   }
 }
 
-void UserDataTreatment(uint8_t *DataBuffer)
+void UserDataTreatment(uint8_t *DataBuffer, uint32_t Size)
 {
 	/* Display info message + buffer content on PC com port */
 	printf("\r\n- Current RX buffer is full : ");
-	printf(DataBuffer);
+	printf((char *)DataBuffer);
 	printf("\r\n- Reception will go on in alternate buffer\r\n");
 
 	/* Toggle LED */
