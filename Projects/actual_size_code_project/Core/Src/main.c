@@ -22,6 +22,8 @@
 #include "main.h"
 #include "cmsis_os.h"
 #include "lwip.h"
+#include "cmdline.h"
+#include "lidar.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -35,7 +37,7 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-#define RX_BUFFER_SIZE   12
+
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -56,22 +58,12 @@ osThreadId initTaskHandle;
 osThreadId heartbeatTaskHandle;
 osThreadId switchIPTaskHandle;
 osThreadId cmdlineTaskHandle;
+osThreadId cmdlineTaskHandleX;
 
 osTimerId debounceTimerHandle;
 
 osSemaphoreId debounceSemHandle;
 osSemaphoreId appSemHandle;
-
-/* USER CODE BEGIN PV */
-/* Buffer used for reception */
-uint8_t aRXBufferA[RX_BUFFER_SIZE];
-uint8_t aRXBufferB[RX_BUFFER_SIZE];
-__IO uint32_t     uwNbReceivedChars;
-__IO uint32_t     uwBufferReadyIndication;
-uint8_t *pBufferReadyForUser;
-uint8_t *pBufferReadyForReception;
-
-/* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
@@ -83,55 +75,23 @@ static void MX_USB_OTG_FS_PCD_Init(void);
 void InitTask(void const * argument);
 void HeartbeatTask(void const * argument);
 void SwitchIPTask(void const * argument);
-void CmdlineTask(void const * argument);
 void debounceTimerCallback(void const * argument);
-void StartReception(void);
-void HandleContinuousReception(void);
-void UserDataTreatment(uint8_t *DataBuffer, uint32_t Size);
 
-
-/* USER CODE BEGIN PFP */
-
-/* USER CODE END PFP */
-
-/* Private user code ---------------------------------------------------------*/
-/* USER CODE BEGIN 0 */
-int __io_putchar(int ch)
-{
-  /* Place your implementation of fputc here */
-  /* e.g. write a character to the USART3 and Loop until the end of transmission */
-//  HAL_UART_Transmit(&huart3, (uint8_t *)&ch, 1, 0xFFFF);
-	  HAL_UART_Transmit(&huart3, (uint8_t *)&ch, 1, 0xFFFF);
-  return ch;
+// Redirect printf to USART3
+int __io_putchar(int ch){
+	HAL_UART_Transmit(&huart3, (uint8_t *)&ch, 1, 0xFFFF);
+	return ch;
 }
-/* USER CODE END 0 */
 
-/**
-  * @brief  The application entry point.
-  * @retval int
-  */
+// Main
 int main(void)
 {
-  /* USER CODE BEGIN 1 */
-
-  /* USER CODE END 1 */
-  
-
-  /* MCU Configuration--------------------------------------------------------*/
 
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
   HAL_Init();
 
-  /* USER CODE BEGIN Init */
-
-  /* USER CODE END Init */
-
   /* Configure the system clock */
   SystemClock_Config();
-
-  /* USER CODE BEGIN SysInit */
-
-  /* USER CODE END SysInit */
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
@@ -139,15 +99,7 @@ int main(void)
   MX_USART2_UART_Init();
   MX_USART3_UART_Init();
   MX_USB_OTG_FS_PCD_Init();
-  /* USER CODE BEGIN 2 */
 
-  /* USER CODE END 2 */
-
-  /* USER CODE BEGIN RTOS_MUTEX */
-  /* add mutexes, ... */
-  /* USER CODE END RTOS_MUTEX */
-
-  /* Create the semaphores(s) */
   /* definition and creation of debounceSem */
   osSemaphoreDef(debounceSem);
   debounceSemHandle = osSemaphoreCreate(osSemaphore(debounceSem), 1);
@@ -156,24 +108,10 @@ int main(void)
   osSemaphoreDef(appSem);
   appSemHandle = osSemaphoreCreate(osSemaphore(appSem), 1);
 
-  /* USER CODE BEGIN RTOS_SEMAPHORES */
-  /* add semaphores, ... */
-  /* USER CODE END RTOS_SEMAPHORES */
-
-  /* Create the timer(s) */
   /* definition and creation of debounceTimer */
   osTimerDef(debounceTimer, debounceTimerCallback);
   debounceTimerHandle = osTimerCreate(osTimer(debounceTimer), osTimerOnce, NULL);
 
-  /* USER CODE BEGIN RTOS_TIMERS */
-  /* start timers, add new ones, ... */
-  /* USER CODE END RTOS_TIMERS */
-
-  /* USER CODE BEGIN RTOS_QUEUES */
-  /* add queues, ... */
-  /* USER CODE END RTOS_QUEUES */
-
-  /* Create the thread(s) */
   /* definition and creation of initTask */
   osThreadDef(initTask, InitTask, osPriorityNormal, 0, 640);
   initTaskHandle = osThreadCreate(osThread(initTask), NULL);
@@ -190,25 +128,17 @@ int main(void)
   osThreadDef(cmdlineTask, CmdlineTask, osPriorityIdle, 0, 128);
   cmdlineTaskHandle = osThreadCreate(osThread(cmdlineTask), NULL);
 
-  /* USER CODE BEGIN RTOS_THREADS */
-  /* add threads, ... */
-
-  /* USER CODE END RTOS_THREADS */
+  /* definition and creation of lidarTask */
+  osThreadDef(cmdlineTaskX, CmdlineTaskX, osPriorityIdle, 0, 128);
+  cmdlineTaskHandleX = osThreadCreate(osThread(cmdlineTaskX), NULL);
 
   /* Start scheduler */
   osKernelStart();
-  
-  /* We should never get here as control is now taken by the scheduler */
 
   /* Infinite loop */
-  /* USER CODE BEGIN WHILE */
   while (1)
   {
-    /* USER CODE END WHILE */
-
-    /* USER CODE BEGIN 3 */
   }
-  /* USER CODE END 3 */
 }
 
 /**
@@ -556,85 +486,7 @@ void SwitchIPTask(void const * argument)
 * @retval None
 */
 /* USER CODE END Header_CmdlineTask */
-void CmdlineTask(void const * argument)
-{
-  StartReception();
 
-  /* Infinite loop */
-  for(;;)
-  {
-	  HandleContinuousReception();
-  }
-  /* USER CODE END CmdlineTask */
-}
-
-void StartReception(void)
-{
-  /* Initializes Buffer swap mechanism :
-     - 2 physical buffers aRXBufferA and aRXBufferB (RX_BUFFER_SIZE length)
-
-  */
-  pBufferReadyForReception = aRXBufferA;
-  pBufferReadyForUser      = aRXBufferB;
-  uwNbReceivedChars = 0;
-  uwBufferReadyIndication = 0;
-
-  /* Print user info on PC com port */
-  printf("\r\nUSART Example : Enter characters to fill reception buffers.\r\n");
-  /* Clear Overrun flag, in case characters have already been sent to USART */
-  LL_USART_ClearFlag_ORE(USART3);
-
-  /* Enable RXNE and Error interrupts */
-  LL_USART_EnableIT_RXNE(USART3);
-  LL_USART_EnableIT_ERROR(USART3);
-}
-
-void USART_CharReception_Callback(void)
-{
-	uint8_t *ptemp;
-	uint8_t c;
-  /* Read Received character. RXNE flag is cleared by reading of RDR register */
-	c = LL_USART_ReceiveData8(USART3);
-	pBufferReadyForReception[uwNbReceivedChars++] = c;
-
-  /* Checks if Buffer full indication has been set */
-  if ((uwNbReceivedChars >= RX_BUFFER_SIZE)||(c == '\r')||(c == '\n'))
-  {
-    /* Set Buffer swap indication */
-    uwBufferReadyIndication = 1;
-
-    /* Swap buffers for next bytes to be received */
-    ptemp = pBufferReadyForUser;
-    pBufferReadyForUser = pBufferReadyForReception;
-    pBufferReadyForReception = ptemp;
-    uwNbReceivedChars = 0;
-  }
-}
-
-
-void HandleContinuousReception(void)
-{
-  /* Checks if Buffer full indication has been set */
-  if (uwBufferReadyIndication != 0)
-  {
-    /* Reset indication */
-    uwBufferReadyIndication = 0;
-
-    /* Call user Callback in charge of consuming data from filled buffer */
-    UserDataTreatment(pBufferReadyForUser, sizeof(*pBufferReadyForUser));
-  }
-}
-
-void UserDataTreatment(uint8_t *DataBuffer, uint32_t Size)
-{
-	/* Display info message + buffer content on PC com port */
-	printf("\r\n- Current RX buffer is full : ");
-	printf((char *)DataBuffer);
-	printf("\r\n- Reception will go on in alternate buffer\r\n");
-
-	/* Toggle LED */
-	HAL_GPIO_TogglePin(LD2_GPIO_Port,LD2_Pin);
-}
 
 /* debounceTimerCallback function */
 void debounceTimerCallback(void const * argument)
