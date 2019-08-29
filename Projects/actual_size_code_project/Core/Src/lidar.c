@@ -2,19 +2,16 @@
  * lidar.c
  *
  *  Created on: Aug 27, 2019
- *      Author: chris
+ *      Author: chris [actual_size]
  *
- *      Drive to the Slamtec A1M8 Lidar via UART2
+ *      Driver to the Slamtec A1M8 Lidar via UART2
  *
  *
  *      Currently only talks to virtual com
  */
-
-
 #include "lidar.h"
 
-
-uint8_t aTextInfoStart[] = "\r\nUSART Example : Enter characters to fill reception buffers.\r\n";
+uint8_t lidar_command[2] = {LIDAR_START_BYTE, LIDAR_CMD_GET_INFO};
 uint8_t aTextInfoSwap1[] = "\r\n- Current RX buffer is full : ";
 uint8_t aTextInfoSwap2[] = "\r\n- Reception will go on in alternate buffer\r\n";
 
@@ -25,7 +22,7 @@ volatile uint32_t     uwBufferReadyIndicationX;
 uint8_t *pBufferReadyForUserX;
 uint8_t *pBufferReadyForReceptionX;
 
-void PrintInfo(uint8_t *String, uint32_t Size);
+void LidarSendData(uint8_t *String, uint32_t Size);
 void StartReceptionX(void);
 void HandleContinuousReceptionX(void);
 void UserDataTreatmentX(uint8_t *DataBuffer, uint32_t Size);
@@ -33,6 +30,9 @@ void UserDataTreatmentX(uint8_t *DataBuffer, uint32_t Size);
 void CmdlineTaskX(void const * argument)
 {
   StartReceptionX();
+
+  /* Send Test Command*/
+  LidarSendData(lidar_command, sizeof(lidar_command));
 
   /* Infinite loop */
   for(;;)
@@ -43,7 +43,7 @@ void CmdlineTaskX(void const * argument)
 }
 
 
-void PrintInfo(uint8_t *String, uint32_t Size)
+void LidarSendData(uint8_t *String, uint32_t Size)
 {
   uint32_t index = 0;
   uint8_t *pchar = String;
@@ -55,7 +55,6 @@ void PrintInfo(uint8_t *String, uint32_t Size)
     while (!LL_USART_IsActiveFlag_TXE(USART2))
     {
     }
-
     /* Write character in Transmit Data register.
        TXE flag is cleared by writing data in TDR register */
     LL_USART_TransmitData8(USART2, *pchar++);
@@ -77,9 +76,6 @@ void StartReceptionX(void)
   pBufferReadyForUserX      = aRXBufferBX;
   uwNbReceivedCharsX = 0;
   uwBufferReadyIndicationX = 0;
-
-  /* Print user info on PC com port */
-  PrintInfo(aTextInfoStart, sizeof(aTextInfoStart));
 
   /* Clear Overrun flag, in case characters have already been sent to USART */
   LL_USART_ClearFlag_ORE(USART2);
@@ -127,9 +123,7 @@ void HandleContinuousReceptionX(void)
 void UserDataTreatmentX(uint8_t *DataBuffer, uint32_t Size)
 {
 	/* Display info message + buffer content on PC com port */
-	PrintInfo(aTextInfoSwap1, sizeof(aTextInfoSwap1));
-	PrintInfo(DataBuffer, Size);
-	PrintInfo(aTextInfoSwap2, sizeof(aTextInfoSwap2));
+	LidarSendData(DataBuffer, Size);
 
 	/* Toggle LED */
 //	HAL_GPIO_TogglePin(LD2_GPIO_Port,LD2_Pin);
