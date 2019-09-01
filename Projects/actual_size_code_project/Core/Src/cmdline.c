@@ -3,6 +3,8 @@
 #include "main.h"
 #include "cmsis_os.h"
 #include "lwip.h"
+#include <string.h>
+#include "lidar.h"
 
 /* Buffer used for reception */
 uint8_t aRXBufferA[RX_BUFFER_SIZE];
@@ -39,7 +41,7 @@ void StartReception(void)
   uwBufferReadyIndication = 0;
 
   /* Print user info on PC com port */
-  printf("\r\nUART3: Enter characters to fill reception buffers.\r\n");
+  printf("\r\nEnter command: \r\n");
   /* Clear Overrun flag, in case characters have already been sent to USART */
   LL_USART_ClearFlag_ORE(USART3);
 
@@ -84,14 +86,24 @@ void HandleContinuousReception(void)
     UserDataTreatment(pBufferReadyForUser, sizeof(*pBufferReadyForUser));
   }
 }
-
+extern QueueHandle_t lidarQueue;
+#define LIDAR_MOTOR_ON_FLAG		0x00000001
+#define LIDAR_MOTOR_OFF_FLAG	0x00000002
 void UserDataTreatment(uint8_t *DataBuffer, uint32_t Size)
 {
-	/* Display info message + buffer content on PC com port */
-	printf("\r\n- Current RX buffer is full : ");
-	printf((char *)DataBuffer);
-	printf("\r\n- Reception will go on in alternate buffer\r\n");
-
+unsigned long flag;
+	if(!strcmp("lidar_motor_on\r", (char *)DataBuffer)){
+		flag = LIDAR_MOTOR_ON_FLAG;
+		xQueueSend( lidarQueue, &flag, 0U );
+//		printf((char *)DataBuffer);
+	}else if(!strcmp("lidar_motor_off\r", (char *)DataBuffer)){
+		flag = LIDAR_MOTOR_OFF_FLAG;
+		xQueueSend( lidarQueue, &flag, 0U );
+	}else{
+		printf("\r\nCommand: \n");
+		printf((char *)DataBuffer);
+		printf("\r\n is an INVALID command.\r\n");
+	}
 	/* Toggle LED */
 //	HAL_GPIO_TogglePin(LD2_GPIO_Port,LD2_Pin);
 }

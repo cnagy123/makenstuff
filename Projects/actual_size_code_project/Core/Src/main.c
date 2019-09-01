@@ -20,7 +20,6 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
-#include "cmsis_os.h"
 #include "lwip.h"
 #include "cmdline.h"
 #include "lidar.h"
@@ -37,6 +36,7 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
+/* Priorities at which the tasks are created. */
 
 /* USER CODE END PD */
 
@@ -58,7 +58,7 @@ osThreadId initTaskHandle;
 osThreadId heartbeatTaskHandle;
 osThreadId switchIPTaskHandle;
 osThreadId cmdlineTaskHandle;
-osThreadId cmdlineTaskHandleX;
+osThreadId lidarTaskHandle;
 
 osTimerId debounceTimerHandle;
 
@@ -100,6 +100,8 @@ int main(void)
   MX_USART3_UART_Init();
   MX_USB_OTG_FS_PCD_Init();
 
+
+
   /* definition and creation of debounceSem */
   osSemaphoreDef(debounceSem);
   debounceSemHandle = osSemaphoreCreate(osSemaphore(debounceSem), 1);
@@ -129,8 +131,8 @@ int main(void)
   cmdlineTaskHandle = osThreadCreate(osThread(cmdlineTask), NULL);
 
   /* definition and creation of lidarTask */
-  osThreadDef(cmdlineTaskX, CmdlineTaskX, osPriorityIdle, 0, 128);
-  cmdlineTaskHandleX = osThreadCreate(osThread(cmdlineTaskX), NULL);
+  osThreadDef(lidarTask, LidarTask, osPriorityIdle, 0, 128);
+  lidarTaskHandle = osThreadCreate(osThread(lidarTask), NULL);
 
   /* Start scheduler */
   osKernelStart();
@@ -373,6 +375,7 @@ static void MX_GPIO_Init(void)
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOB, LD1_Pin|LD3_Pin|LD2_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOD, GPIO_PIN_6, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(USB_PowerSwitchOn_GPIO_Port, USB_PowerSwitchOn_Pin, GPIO_PIN_RESET);
@@ -389,6 +392,13 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : LD1_Pin LD3_Pin LD2_Pin */
+  GPIO_InitStruct.Pin = GPIO_PIN_6;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
 
   /*Configure GPIO pin : USB_PowerSwitchOn_Pin */
   GPIO_InitStruct.Pin = USB_PowerSwitchOn_Pin;

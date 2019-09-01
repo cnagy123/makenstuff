@@ -4,7 +4,7 @@
 
 #include "includes.h"
 
-#define RX_BUFFER_SIZE   12
+#define RX_BUFFER_SIZE   32
 
 void CmdlineTask(void const * argument);
 void USART_CharReception_Callback(void);

@@ -20,5 +20,8 @@
 #include "stm32f7xx_ll_pwr.h"
 
 
+#include "cmsis_os.h"
+#include <stdio.h>
+#include <stdbool.h>
 
 #endif /* INC_INCLUDES_H_ */
