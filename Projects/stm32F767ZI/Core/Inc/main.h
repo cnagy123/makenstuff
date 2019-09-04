@@ -53,6 +53,7 @@ extern "C" {
 #include "imu.h"
 #include "cmdLine.h"
 #include "mainApp.h"
+#include "lidar.h"
 
 /* USER CODE END Includes */
 

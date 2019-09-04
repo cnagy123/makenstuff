@@ -52,11 +52,6 @@ UART_HandleTypeDef huart2;
 PCD_HandleTypeDef hpcd_USB_OTG_FS;
 
 osThreadId initTaskHandle;
-osThreadId lidarTaskHandle;
-
-osMessageQId lidarQueueHandle;
-
-osMutexId lidarMutexHandle;
 
 /* USER CODE BEGIN PV */
 
@@ -72,8 +67,6 @@ static void MX_USB_OTG_FS_PCD_Init(void);
 static void MX_ETH_Init(void);
 
 void InitTask(void const * argument);
-void LidarTask(void const * argument);
-
 
 /* USER CODE BEGIN PFP */
 
@@ -593,16 +586,7 @@ void InitTask(void const * argument)
 * @retval None
 */
 /* USER CODE END Header_LidarTask */
-void LidarTask(void const * argument)
-{
-  /* USER CODE BEGIN LidarTask */
-  /* Infinite loop */
-  for(;;)
-  {
-    osDelay(1);
-  }
-  /* USER CODE END LidarTask */
-}
+
 
 /* USER CODE BEGIN Header_MainAppTask */
 /**

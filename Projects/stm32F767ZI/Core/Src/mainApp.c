@@ -45,6 +45,8 @@ void initMainApp(void)
 		memset(app.printBuffer, 0, sizeof(app.printBuffer));
 		osSemaphoreRelease(appSemHandle);
 	}
+
+	print2Console("Enter a Command:\r\n");
 }
 
 states mainApp(states state)
@@ -65,9 +67,11 @@ states mainApp(states state)
 		next_state = executeCommand(cmd);
 		break;
 	case SET_LIDAR_MOTOR_ON:
+		LidarMotorOn();
 		next_state = WAIT_FOR_CMD;
 		break;
 	case SET_LIDAR_MOTOR_OFF:
+		LidarMotorOff();
 		next_state = WAIT_FOR_CMD;
 		break;
 	case GET_LIDAR_INFO:
