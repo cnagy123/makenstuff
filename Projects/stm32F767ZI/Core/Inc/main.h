@@ -54,6 +54,7 @@ extern "C" {
 #include "cmdLine.h"
 #include "mainApp.h"
 #include "lidar.h"
+#include "uart2.h"
 
 /* USER CODE END Includes */
 

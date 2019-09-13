@@ -1,0 +1,21 @@
+/*
+ * mainApp.h
+ *
+ *  Created on: Sep 10, 2019
+ *      Author: chris
+ */
+
+#ifndef MAINAPP_H_
+#define MAINAPP_H_
+
+#include "includes.h"
+
+struct MainApp{
+	uint32_t 	printFlag;
+	uint8_t		printBuffer[50];
+};
+
+extern struct MainApp app;
+
+
+#endif /* MAINAPP_H_ */

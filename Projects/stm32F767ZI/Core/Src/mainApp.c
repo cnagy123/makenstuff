@@ -17,7 +17,9 @@ typedef enum {
 	SET_LIDAR_MOTOR_ON,
 	SET_LIDAR_MOTOR_OFF,
 	GET_LIDAR_INFO,
+	LIDAR_SCAN_START,
 }states;
+
 
 struct MainApp app;
 
@@ -75,7 +77,12 @@ states mainApp(states state)
 		next_state = WAIT_FOR_CMD;
 		break;
 	case GET_LIDAR_INFO:
-		next_state = IDLE;
+		LidarGetInfo();
+		next_state = WAIT_FOR_CMD;
+		break;
+	case LIDAR_SCAN_START:
+		LidarScan();
+		next_state = WAIT_FOR_CMD;
 		break;
 	default:
 		next_state = IDLE;
@@ -102,6 +109,10 @@ states executeCommand(commands cmd)
 	case LIDAR_GET_INFO:
 		next_state = GET_LIDAR_INFO;
 		break;
+	case LIDAR_START_SCAN:
+		next_state = LIDAR_SCAN_START;
+		break;
+
 	default:
 		break;
 	}

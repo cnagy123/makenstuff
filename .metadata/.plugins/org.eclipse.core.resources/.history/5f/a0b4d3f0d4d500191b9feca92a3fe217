@@ -1,0 +1,114 @@
+/*
+ * uart2.c
+ *
+ *  Created on: Sep 2, 2019
+ *      Author: chris
+ */
+
+#include "uart2.h"
+
+#define UART2_RX_BUFFER_SIZE	128
+#define UART2_QUEUE_LENGTH		1
+
+uint8_t uart2_rxBufferA[UART2_RX_BUFFER_SIZE];
+uint8_t uart2_rxBufferB[UART2_RX_BUFFER_SIZE];
+
+volatile uint32_t uart2_receivedChars;
+volatile uint32_t uart2_bufferReadyflag;
+volatile uint32_t uart2_bufferLength;
+volatile uint32_t flag;
+
+uint8_t *uart2_pBufferReadyforProcessing;
+uint8_t *uart2_pBufferReadyForReception;
+
+void uart2HandleContinuousReception(void);
+
+void uart2SendData(uint8_t *String, uint32_t Size)
+{
+  uint32_t index = 0;
+  uint8_t *pchar = String;
+  /* Send characters one per one, until last char to be sent */
+  for (index = 0; index < Size; index++)
+  {
+    /* Wait for TXE flag to be raised */
+    while (!((READ_BIT(USART2->ISR, USART_ISR_TXE) == (USART_ISR_TXE)) ? 1UL : 0UL))
+    {
+    }
+    /* Write character in Transmit Data register.
+       TXE flag is cleared by writing data in TDR register */
+    USART2->TDR = *pchar;
+    pchar++;
+  }
+  /* Wait for TC flag to be raised for last char */
+  while (!((READ_BIT(USART2->ISR, USART_ISR_TC) == (USART_ISR_TC)) ? 1UL : 0UL))
+  {
+  }
+}
+
+void uart2Task(void)
+{
+  /* Infinite loop */
+		if(flag == 0){
+		  uart2HandleContinuousReception();
+		  flag = 1;
+		}else{
+		  uart2HandleContinuousReception();
+		}
+  /* USER CODE END CmdlineTask */
+}
+
+void uart2CharReceptionCallback(void)
+{
+	uint8_t *ptemp;
+	uint8_t c;
+
+	/* Read Received character. RXNE flag is cleared by reading of RDR register */
+	c =  (uint8_t)(READ_BIT(USART2->RDR, USART_RDR_RDR));
+	uart2_pBufferReadyForReception[uart2_receivedChars++] = c;
+
+	/* Checks if Buffer full indication has been set */
+	if ((uart2_receivedChars >= uart2_bufferLength) || (c = '\0'))
+	{
+		/* Set Buffer swap indication */
+		uart2_bufferReadyflag = 1;
+
+		/* Swap buffers for next bytes to be received */
+		ptemp = uart2_pBufferReadyforProcessing;
+		uart2_pBufferReadyforProcessing = uart2_pBufferReadyForReception;
+		uart2_pBufferReadyForReception = ptemp;
+		uart2_receivedChars = 0;
+	}
+}
+
+void uart2InitReception(void)
+{
+	uart2_pBufferReadyForReception 	= uart2_rxBufferA;
+	uart2_pBufferReadyforProcessing = uart2_rxBufferB;
+
+	uart2_receivedChars = 0;
+	uart2_bufferReadyflag = 0;
+	uart2_bufferLength = UART2_RX_BUFFER_SIZE;
+
+	flag = 0;
+
+	WRITE_REG(USART2->ICR, USART_ICR_ORECF);	//ClearFlag;
+	SET_BIT(USART2->CR1, USART_CR1_RXNEIE);		//Enable IT RXNE;
+	SET_BIT(USART2->CR3, USART_CR3_EIE);		//Enable IT ERROR;
+}
+
+void uart2HandleContinuousReception(void)
+{
+
+	/* Checks if Buffer full indication has been set */
+	if (uart2_bufferReadyflag != 0)
+	{
+		/* Reset indication */
+		  uart2_bufferReadyflag = 0;
+		  flag = 0;
+
+		/* Do something with the data */
+
+	}else{
+
+	}
+}

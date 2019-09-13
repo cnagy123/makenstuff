@@ -19,12 +19,33 @@ typedef enum {
 	LIDAR_MOTOR_ON,
 	LIDAR_MOTOR_OFF,
 	LIDAR_GET_INFO,
+	LIDAR_START_SCAN,
 }commands;
 
+typedef struct {
+	uint8_t start_flag1;
+	uint8_t start_flag2;
+	unsigned data_response_length : 30;
+	unsigned send_mode: 2;
+	uint8_t data_type;
+}lidarResponse;
+
+typedef struct {
+	uint8_t model;
+	uint8_t firmware_minor;
+	uint8_t firmware_major;
+	uint8_t hardware;
+	uint8_t serial[16];
+}lidarInfo;
+
 struct MainApp{
-	commands	command;
-	uint32_t	mainLED;
+
 	uint8_t		printBuffer[50];
+	uint32_t	lidar_motor_state;
+	uint32_t	mainLED;
+	commands	command;
+	lidarResponse response;
+	lidarInfo info;
 };
 
 extern struct MainApp app;

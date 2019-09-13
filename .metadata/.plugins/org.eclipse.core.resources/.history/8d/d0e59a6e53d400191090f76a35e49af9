@@ -1,0 +1,21 @@
+/*
+ * printInfo.c
+ *
+ *  Created on: Sep 10, 2019
+ *      Author: chris
+ */
+
+
+#include "printInfo.h"
+
+
+
+
+void printInfo(void){
+	if(app.printFlag == 1){
+		printf("%s", app.printBuffer);
+		memset(app.printBuffer, 0, sizeof(app.printBuffer));
+		app.printFlag = 0;
+	}
+	HAL_GPIO_TogglePin(GPIOB, LD3_Pin);
+}

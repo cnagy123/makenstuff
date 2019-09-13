@@ -1,0 +1,13 @@
+/*
+ * printInfo.c
+ *
+ *  Created on: Sep 10, 2019
+ *      Author: chris
+ */
+
+
+#include "printInfo.h"
+
+void printInfo(void){
+	HAL_GPIO_TogglePin(GPIOB, LD3_Pin);
+}

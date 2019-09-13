@@ -138,7 +138,8 @@ int main(void)
   appSemHandle = osSemaphoreCreate(osSemaphore(appSem), 1);
 
   /* USER CODE BEGIN RTOS_SEMAPHORES */
-  /* add semaphores, ... */
+  osSemaphoreDef(uart2Sem);
+  uart2SemHandle = osSemaphoreCreate(osSemaphore(uart2Sem), 1);
   /* USER CODE END RTOS_SEMAPHORES */
 
   /* Create the timer(s) */
@@ -169,19 +170,19 @@ int main(void)
 
   /* Create the thread(s) */
   /* definition and creation of initTask */
-  osThreadDef(initTask, InitTask, osPriorityNormal, 0, 640);
+  osThreadDef(initTask, InitTask, osPriorityNormal, 2, 640);
   initTaskHandle = osThreadCreate(osThread(initTask), NULL);
 
   /* definition and creation of heartbeatTask */
-  osThreadDef(heartbeatTask, HeartbeatTask, osPriorityIdle, 0, 128);
+  osThreadDef(heartbeatTask, HeartbeatTask, osPriorityIdle, 6, 128);
   heartbeatTaskHandle = osThreadCreate(osThread(heartbeatTask), NULL);
 
   /* definition and creation of imuTask */
-  osThreadDef(imuTask, IMUTask, osPriorityIdle, 0, 128);
+  osThreadDef(imuTask, IMUTask, osPriorityIdle, 1, 128);
   imuTaskHandle = osThreadCreate(osThread(imuTask), NULL);
 
   /* definition and creation of cmdlineTask */
-  osThreadDef(cmdlineTask, CmdlineTask, osPriorityIdle, 0, 128);
+  osThreadDef(cmdlineTask, CmdlineTask, osPriorityIdle, 1, 512);
   cmdlineTaskHandle = osThreadCreate(osThread(cmdlineTask), NULL);
 
   /* definition and creation of lidarTask */
@@ -193,8 +194,12 @@ int main(void)
   mainAppTaskHandle = osThreadCreate(osThread(mainAppTask), NULL);
 
   /* definition and creation of printInfoTask */
-  osThreadDef(printInfoTask, PrintInfoTask, osPriorityIdle, 0, 128);
+  osThreadDef(printInfoTask, PrintInfoTask, osPriorityIdle, 2, 128);
   printInfoTaskHandle = osThreadCreate(osThread(printInfoTask), NULL);
+
+  /* definition and creation of uart2 task */
+  osThreadDef(uart2Task, Uart2Task, osPriorityIdle, 0, 512);
+  uart2Handle = osThreadCreate(osThread(uart2Task), NULL);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */

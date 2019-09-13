@@ -1,0 +1,16 @@
+/*
+ * cmdLine.h
+ *
+ *  Created on: Sep 2, 2019
+ *      Author: chris
+ */
+
+#ifndef INC_CMDLINE_H_
+#define INC_CMDLINE_H_
+
+#include "includes.h"
+
+void cmdLineTask(void);
+void cmdLineInit(void);
+
+#endif /* INC_CMDLINE_H_ */
