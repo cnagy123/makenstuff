@@ -1,71 +1,19 @@
-23:07:25 **** Incremental Build of configuration Debug for project STM32F767ZI_NUCLEO ****
+20:41:31 **** Incremental Build of configuration Debug for project STM32F767ZI_NUCLEO ****
 make all 
 Building file: ../Src/cmdLine.c
 Invoking: MCU GCC Compiler
 C:\Users\chris\Desktop\makenstuff\makenstuff\Projects\STM32F767ZI_NUCLEO\Debug
-arm-none-eabi-gcc -mcpu=cortex-m7 -mthumb -mfloat-abi=hard -mfpu=fpv5-d16 '-D__weak=__attribute__((weak))' '-D__packed=__attribute__((__packed__))' -DUSE_HAL_DRIVER -DSTM32F767xx -I"C:/Users/chris/Desktop/makenstuff/makenstuff/Projects/STM32F767ZI_NUCLEO/Inc" -I"C:/Users/chris/Desktop/makenstuff/makenstuff/Projects/STM32F767ZI_NUCLEO/Drivers/STM32F7xx_HAL_Driver/Inc" -I"C:/Users/chris/Desktop/makenstuff/makenstuff/Projects/STM32F767ZI_NUCLEO/Drivers/STM32F7xx_HAL_Driver/Inc/Legacy" -I"C:/Users/chris/Desktop/makenstuff/makenstuff/Projects/STM32F767ZI_NUCLEO/Drivers/CMSIS/Device/ST/STM32F7xx/Include" -I"C:/Users/chris/Desktop/makenstuff/makenstuff/Projects/STM32F767ZI_NUCLEO/Drivers/CMSIS/Include"  -Og -g3 -Wall -fmessage-length=0 -ffunction-sections -c -fmessage-length=0 -MMD -MP -MF"Src/cmdLine.d" -MT"Src/cmdLine.o" -o "Src/cmdLine.o" "../Src/cmdLine.c"
-Finished building: ../Src/cmdLine.c
- 
-Building file: ../Src/heartbeat.c
-Invoking: MCU GCC Compiler
-C:\Users\chris\Desktop\makenstuff\makenstuff\Projects\STM32F767ZI_NUCLEO\Debug
-arm-none-eabi-gcc -mcpu=cortex-m7 -mthumb -mfloat-abi=hard -mfpu=fpv5-d16 '-D__weak=__attribute__((weak))' '-D__packed=__attribute__((__packed__))' -DUSE_HAL_DRIVER -DSTM32F767xx -I"C:/Users/chris/Desktop/makenstuff/makenstuff/Projects/STM32F767ZI_NUCLEO/Inc" -I"C:/Users/chris/Desktop/makenstuff/makenstuff/Projects/STM32F767ZI_NUCLEO/Drivers/STM32F7xx_HAL_Driver/Inc" -I"C:/Users/chris/Desktop/makenstuff/makenstuff/Projects/STM32F767ZI_NUCLEO/Drivers/STM32F7xx_HAL_Driver/Inc/Legacy" -I"C:/Users/chris/Desktop/makenstuff/makenstuff/Projects/STM32F767ZI_NUCLEO/Drivers/CMSIS/Device/ST/STM32F7xx/Include" -I"C:/Users/chris/Desktop/makenstuff/makenstuff/Projects/STM32F767ZI_NUCLEO/Drivers/CMSIS/Include"  -Og -g3 -Wall -fmessage-length=0 -ffunction-sections -c -fmessage-length=0 -MMD -MP -MF"Src/heartbeat.d" -MT"Src/heartbeat.o" -o "Src/heartbeat.o" "../Src/heartbeat.c"
-Finished building: ../Src/heartbeat.c
- 
-Building file: ../Src/lidar.c
-Invoking: MCU GCC Compiler
-C:\Users\chris\Desktop\makenstuff\makenstuff\Projects\STM32F767ZI_NUCLEO\Debug
-arm-none-eabi-gcc -mcpu=cortex-m7 -mthumb -mfloat-abi=hard -mfpu=fpv5-d16 '-D__weak=__attribute__((weak))' '-D__packed=__attribute__((__packed__))' -DUSE_HAL_DRIVER -DSTM32F767xx -I"C:/Users/chris/Desktop/makenstuff/makenstuff/Projects/STM32F767ZI_NUCLEO/Inc" -I"C:/Users/chris/Desktop/makenstuff/makenstuff/Projects/STM32F767ZI_NUCLEO/Drivers/STM32F7xx_HAL_Driver/Inc" -I"C:/Users/chris/Desktop/makenstuff/makenstuff/Projects/STM32F767ZI_NUCLEO/Drivers/STM32F7xx_HAL_Driver/Inc/Legacy" -I"C:/Users/chris/Desktop/makenstuff/makenstuff/Projects/STM32F767ZI_NUCLEO/Drivers/CMSIS/Device/ST/STM32F7xx/Include" -I"C:/Users/chris/Desktop/makenstuff/makenstuff/Projects/STM32F767ZI_NUCLEO/Drivers/CMSIS/Include"  -Og -g3 -Wall -fmessage-length=0 -ffunction-sections -c -fmessage-length=0 -MMD -MP -MF"Src/lidar.d" -MT"Src/lidar.o" -o "Src/lidar.o" "../Src/lidar.c"
-Finished building: ../Src/lidar.c
- 
-Building file: ../Src/main.c
-Invoking: MCU GCC Compiler
-C:\Users\chris\Desktop\makenstuff\makenstuff\Projects\STM32F767ZI_NUCLEO\Debug
-arm-none-eabi-gcc -mcpu=cortex-m7 -mthumb -mfloat-abi=hard -mfpu=fpv5-d16 '-D__weak=__attribute__((weak))' '-D__packed=__attribute__((__packed__))' -DUSE_HAL_DRIVER -DSTM32F767xx -I"C:/Users/chris/Desktop/makenstuff/makenstuff/Projects/STM32F767ZI_NUCLEO/Inc" -I"C:/Users/chris/Desktop/makenstuff/makenstuff/Projects/STM32F767ZI_NUCLEO/Drivers/STM32F7xx_HAL_Driver/Inc" -I"C:/Users/chris/Desktop/makenstuff/makenstuff/Projects/STM32F767ZI_NUCLEO/Drivers/STM32F7xx_HAL_Driver/Inc/Legacy" -I"C:/Users/chris/Desktop/makenstuff/makenstuff/Projects/STM32F767ZI_NUCLEO/Drivers/CMSIS/Device/ST/STM32F7xx/Include" -I"C:/Users/chris/Desktop/makenstuff/makenstuff/Projects/STM32F767ZI_NUCLEO/Drivers/CMSIS/Include"  -Og -g3 -Wall -fmessage-length=0 -ffunction-sections -c -fmessage-length=0 -MMD -MP -MF"Src/main.d" -MT"Src/main.o" -o "Src/main.o" "../Src/main.c"
-Finished building: ../Src/main.c
- 
-Building file: ../Src/mainApp.c
-Invoking: MCU GCC Compiler
-C:\Users\chris\Desktop\makenstuff\makenstuff\Projects\STM32F767ZI_NUCLEO\Debug
-arm-none-eabi-gcc -mcpu=cortex-m7 -mthumb -mfloat-abi=hard -mfpu=fpv5-d16 '-D__weak=__attribute__((weak))' '-D__packed=__attribute__((__packed__))' -DUSE_HAL_DRIVER -DSTM32F767xx -I"C:/Users/chris/Desktop/makenstuff/makenstuff/Projects/STM32F767ZI_NUCLEO/Inc" -I"C:/Users/chris/Desktop/makenstuff/makenstuff/Projects/STM32F767ZI_NUCLEO/Drivers/STM32F7xx_HAL_Driver/Inc" -I"C:/Users/chris/Desktop/makenstuff/makenstuff/Projects/STM32F767ZI_NUCLEO/Drivers/STM32F7xx_HAL_Driver/Inc/Legacy" -I"C:/Users/chris/Desktop/makenstuff/makenstuff/Projects/STM32F767ZI_NUCLEO/Drivers/CMSIS/Device/ST/STM32F7xx/Include" -I"C:/Users/chris/Desktop/makenstuff/makenstuff/Projects/STM32F767ZI_NUCLEO/Drivers/CMSIS/Include"  -Og -g3 -Wall -fmessage-length=0 -ffunction-sections -c -fmessage-length=0 -MMD -MP -MF"Src/mainApp.d" -MT"Src/mainApp.o" -o "Src/mainApp.o" "../Src/mainApp.c"
-Finished building: ../Src/mainApp.c
- 
-Building file: ../Src/printInfo.c
-Invoking: MCU GCC Compiler
-C:\Users\chris\Desktop\makenstuff\makenstuff\Projects\STM32F767ZI_NUCLEO\Debug
-arm-none-eabi-gcc -mcpu=cortex-m7 -mthumb -mfloat-abi=hard -mfpu=fpv5-d16 '-D__weak=__attribute__((weak))' '-D__packed=__attribute__((__packed__))' -DUSE_HAL_DRIVER -DSTM32F767xx -I"C:/Users/chris/Desktop/makenstuff/makenstuff/Projects/STM32F767ZI_NUCLEO/Inc" -I"C:/Users/chris/Desktop/makenstuff/makenstuff/Projects/STM32F767ZI_NUCLEO/Drivers/STM32F7xx_HAL_Driver/Inc" -I"C:/Users/chris/Desktop/makenstuff/makenstuff/Projects/STM32F767ZI_NUCLEO/Drivers/STM32F7xx_HAL_Driver/Inc/Legacy" -I"C:/Users/chris/Desktop/makenstuff/makenstuff/Projects/STM32F767ZI_NUCLEO/Drivers/CMSIS/Device/ST/STM32F7xx/Include" -I"C:/Users/chris/Desktop/makenstuff/makenstuff/Projects/STM32F767ZI_NUCLEO/Drivers/CMSIS/Include"  -Og -g3 -Wall -fmessage-length=0 -ffunction-sections -c -fmessage-length=0 -MMD -MP -MF"Src/printInfo.d" -MT"Src/printInfo.o" -o "Src/printInfo.o" "../Src/printInfo.c"
-Finished building: ../Src/printInfo.c
- 
-Building file: ../Src/stm32f7xx_hal_msp.c
-Invoking: MCU GCC Compiler
-C:\Users\chris\Desktop\makenstuff\makenstuff\Projects\STM32F767ZI_NUCLEO\Debug
-arm-none-eabi-gcc -mcpu=cortex-m7 -mthumb -mfloat-abi=hard -mfpu=fpv5-d16 '-D__weak=__attribute__((weak))' '-D__packed=__attribute__((__packed__))' -DUSE_HAL_DRIVER -DSTM32F767xx -I"C:/Users/chris/Desktop/makenstuff/makenstuff/Projects/STM32F767ZI_NUCLEO/Inc" -I"C:/Users/chris/Desktop/makenstuff/makenstuff/Projects/STM32F767ZI_NUCLEO/Drivers/STM32F7xx_HAL_Driver/Inc" -I"C:/Users/chris/Desktop/makenstuff/makenstuff/Projects/STM32F767ZI_NUCLEO/Drivers/STM32F7xx_HAL_Driver/Inc/Legacy" -I"C:/Users/chris/Desktop/makenstuff/makenstuff/Projects/STM32F767ZI_NUCLEO/Drivers/CMSIS/Device/ST/STM32F7xx/Include" -I"C:/Users/chris/Desktop/makenstuff/makenstuff/Projects/STM32F767ZI_NUCLEO/Drivers/CMSIS/Include"  -Og -g3 -Wall -fmessage-length=0 -ffunction-sections -c -fmessage-length=0 -MMD -MP -MF"Src/stm32f7xx_hal_msp.d" -MT"Src/stm32f7xx_hal_msp.o" -o "Src/stm32f7xx_hal_msp.o" "../Src/stm32f7xx_hal_msp.c"
-Finished building: ../Src/stm32f7xx_hal_msp.c
- 
-Building file: ../Src/stm32f7xx_it.c
-Invoking: MCU GCC Compiler
-C:\Users\chris\Desktop\makenstuff\makenstuff\Projects\STM32F767ZI_NUCLEO\Debug
-arm-none-eabi-gcc -mcpu=cortex-m7 -mthumb -mfloat-abi=hard -mfpu=fpv5-d16 '-D__weak=__attribute__((weak))' '-D__packed=__attribute__((__packed__))' -DUSE_HAL_DRIVER -DSTM32F767xx -I"C:/Users/chris/Desktop/makenstuff/makenstuff/Projects/STM32F767ZI_NUCLEO/Inc" -I"C:/Users/chris/Desktop/makenstuff/makenstuff/Projects/STM32F767ZI_NUCLEO/Drivers/STM32F7xx_HAL_Driver/Inc" -I"C:/Users/chris/Desktop/makenstuff/makenstuff/Projects/STM32F767ZI_NUCLEO/Drivers/STM32F7xx_HAL_Driver/Inc/Legacy" -I"C:/Users/chris/Desktop/makenstuff/makenstuff/Projects/STM32F767ZI_NUCLEO/Drivers/CMSIS/Device/ST/STM32F7xx/Include" -I"C:/Users/chris/Desktop/makenstuff/makenstuff/Projects/STM32F767ZI_NUCLEO/Drivers/CMSIS/Include"  -Og -g3 -Wall -fmessage-length=0 -ffunction-sections -c -fmessage-length=0 -MMD -MP -MF"Src/stm32f7xx_it.d" -MT"Src/stm32f7xx_it.o" -o "Src/stm32f7xx_it.o" "../Src/stm32f7xx_it.c"
-Finished building: ../Src/stm32f7xx_it.c
- 
-Building file: ../Src/uart2.c
-Invoking: MCU GCC Compiler
-C:\Users\chris\Desktop\makenstuff\makenstuff\Projects\STM32F767ZI_NUCLEO\Debug
-arm-none-eabi-gcc -mcpu=cortex-m7 -mthumb -mfloat-abi=hard -mfpu=fpv5-d16 '-D__weak=__attribute__((weak))' '-D__packed=__attribute__((__packed__))' -DUSE_HAL_DRIVER -DSTM32F767xx -I"C:/Users/chris/Desktop/makenstuff/makenstuff/Projects/STM32F767ZI_NUCLEO/Inc" -I"C:/Users/chris/Desktop/makenstuff/makenstuff/Projects/STM32F767ZI_NUCLEO/Drivers/STM32F7xx_HAL_Driver/Inc" -I"C:/Users/chris/Desktop/makenstuff/makenstuff/Projects/STM32F767ZI_NUCLEO/Drivers/STM32F7xx_HAL_Driver/Inc/Legacy" -I"C:/Users/chris/Desktop/makenstuff/makenstuff/Projects/STM32F767ZI_NUCLEO/Drivers/CMSIS/Device/ST/STM32F7xx/Include" -I"C:/Users/chris/Desktop/makenstuff/makenstuff/Projects/STM32F767ZI_NUCLEO/Drivers/CMSIS/Include"  -Og -g3 -Wall -fmessage-length=0 -ffunction-sections -c -fmessage-length=0 -MMD -MP -MF"Src/uart2.d" -MT"Src/uart2.o" -o "Src/uart2.o" "../Src/uart2.c"
-Finished building: ../Src/uart2.c
- 
-Building target: STM32F767ZI_NUCLEO.elf
-Invoking: MCU GCC Linker
-arm-none-eabi-gcc -mcpu=cortex-m7 -mthumb -mfloat-abi=hard -mfpu=fpv5-d16 -specs=nosys.specs -specs=nano.specs -T"../STM32F767ZITx_FLASH.ld" -Wl,-Map=output.map -Wl,--gc-sections -o "STM32F767ZI_NUCLEO.elf" @"objects.list"   -lm
-Finished building target: STM32F767ZI_NUCLEO.elf
- 
-make --no-print-directory post-build
-Generating hex and Printing size information:
-arm-none-eabi-objcopy -O ihex "STM32F767ZI_NUCLEO.elf" "STM32F767ZI_NUCLEO.hex"
-arm-none-eabi-size "STM32F767ZI_NUCLEO.elf"
-   text	   data	    bss	    dec	    hex	filename
-  22600	    124	   3916	  26640	   6810	STM32F767ZI_NUCLEO.elf
- 
+arm-none-eabi-gcc -mcpu=cortex-m7 -mthumb -mfloat-abi=hard -mfpu=fpv5-d16 '-D__weak=__attribute__((weak))' -DHAL_SPI_MODULE_ENABLED '-D__packed=__attribute__((__packed__))' -DUSE_HAL_DRIVER -DSTM32F767xx -I"C:/Users/chris/Desktop/makenstuff/makenstuff/Projects/STM32F767ZI_NUCLEO/Inc" -I"C:/Users/chris/Desktop/makenstuff/makenstuff/Projects/STM32F767ZI_NUCLEO/FatFS" -I"C:/Users/chris/Desktop/makenstuff/makenstuff/Projects/STM32F767ZI_NUCLEO/Drivers/STM32F7xx_HAL_Driver/Inc" -I"C:/Users/chris/Desktop/makenstuff/makenstuff/Projects/STM32F767ZI_NUCLEO/Drivers/STM32F7xx_HAL_Driver/Inc/Legacy" -I"C:/Users/chris/Desktop/makenstuff/makenstuff/Projects/STM32F767ZI_NUCLEO/Drivers/CMSIS/Device/ST/STM32F7xx/Include" -I"C:/Users/chris/Desktop/makenstuff/makenstuff/Projects/STM32F767ZI_NUCLEO/Drivers/CMSIS/Include"  -Og -g3 -Wall -fmessage-length=0 -ffunction-sections -c -fmessage-length=0 -MMD -MP -MF"Src/cmdLine.d" -MT"Src/cmdLine.o" -o "Src/cmdLine.o" "../Src/cmdLine.c"
+In file included from C:/Users/chris/Desktop/makenstuff/makenstuff/Projects/STM32F767ZI_NUCLEO/Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal.h:30:0,
+                 from C:/Users/chris/Desktop/makenstuff/makenstuff/Projects/STM32F767ZI_NUCLEO/Inc/includes.h:15,
+                 from C:/Users/chris/Desktop/makenstuff/makenstuff/Projects/STM32F767ZI_NUCLEO/Inc/cmdLine.h:11,
+                 from ../Src/cmdLine.c:8:
+C:/Users/chris/Desktop/makenstuff/makenstuff/Projects/STM32F767ZI_NUCLEO/Inc/stm32f7xx_hal_conf.h:366:11: fatal error: stm32f7xx_hal_spi.h: No such file or directory
+  #include "stm32f7xx_hal_spi.h"
+           ^~~~~~~~~~~~~~~~~~~~~
+compilation terminated.
+make: *** [Src/cmdLine.o] Error 1
+Src/subdir.mk:78: recipe for target 'Src/cmdLine.o' failed
 
-23:07:32 Build Finished (took 6s.889ms)
+20:41:34 Build Finished (took 3s.63ms)
 
